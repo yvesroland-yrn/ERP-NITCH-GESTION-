@@ -1,0 +1,10 @@
+# NightERP Pro — Protection racine
+Options -Indexes
+<IfModule mod_php.c>
+    php_flag display_errors off
+</IfModule>
+
+# Empêcher l'accès direct aux dossiers sensibles
+<FilesMatch "\.(sql|md)$">
+    Require all denied
+</FilesMatch>
