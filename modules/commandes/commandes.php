@@ -26,6 +26,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $cmds = $db->query("SELECT c.*,tc.nom as t_nom,tc.zone,u.nom as u_nom FROM commandes c LEFT JOIN tables_club tc ON c.table_id=tc.id LEFT JOIN utilisateurs u ON c.utilisateur_id=u.id ORDER BY c.id DESC")->fetchAll();
+// echo '<pre>';
+// var_dump($cmds);
+// echo '</pre>';
+
 foreach ($cmds as &$c) {
   $c['details'] = getCommandeDetails($db, $c['id']);
 }
@@ -38,7 +42,19 @@ require_once __DIR__ . '/../../includes/header.php';
 <div class="card">
   <div class="tbl-wrap">
     <table>
-      <thead><tr><th>#</th><th>Date</th><th>Table</th><th>Articles</th><th>Total</th><th>Paiement</th><th>Statut</th><th>Caissier</th><th>Actions</th></tr></thead>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Date</th>
+          <th>Table</th>
+          <th>Articles</th>
+          <th>Total</th>
+          <th>Paiement</th>
+          <th>Statut</th>
+          <th>Caissier</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
       <tbody>
         <?php if ($cmds): foreach($cmds as $c):
           $resume = implode(', ', array_map(fn($i)=>($i['produit_nom'] ?? 'Produit').' ×'.$i['qte'], $c['details']));
@@ -49,7 +65,7 @@ require_once __DIR__ . '/../../includes/header.php';
           <td class="td-muted"><?= dateStr($c['created_at']) ?></td>
           <td><?= $c['t_nom'] ? e($c['zone']).' — '.e($c['t_nom']) : '—' ?></td>
           <td class="td-muted" style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><?= e($resume) ?></td>
-          <td class="td-gold"><?= fmt($c['total']) ?></td>
+          <td class="td-gold"><?= fmt($c['total'] ?? 0) ?></td>
           <td><?= badge($c['mode_paiement']??'—','blue') ?></td>
           <td><?= badge($c['statut'],$sc==='pill-green'?'green':($sc==='pill-red'?'red':'blue')) ?></td>
           <td class="td-muted"><?= e($c['u_nom']??'—') ?></td>

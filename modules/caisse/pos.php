@@ -31,15 +31,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $sousTotal += $prix * $qty;
             }
         }
-        $total = $sousTotal * (1 - $discount / 100);
+        $total = $sousTotal ;
+        // $total = $sousTotal * (1 - $discount / 100);
         $numero = 'CMD-' . date('Ymd') . '-' . sprintf('%04d', rand(1, 9999));
         $payModeDb = in_array($payMode, ['Espèces','Mobile Money','Carte bancaire','Mixte'], true) ? $payMode : 'Espèces';
         $statutDb = 'Payée';
-        $st = $db->prepare("INSERT INTO commandes (table_id,client_id,numero,promotion_id,sous_total,total,mode_paiement,statut,utilisateur_id) VALUES (?,?,?,?,?,?,?,?,?)");
-        $st->execute([$tableId, null, $numero, null, $sousTotal, $total, $payModeDb, $statutDb, $_SESSION['user_id']]);
+        $st = $db->prepare("INSERT INTO commandes (table_id,client_id,numero,promotion_id,total,mode_paiement,statut,utilisateur_id) VALUES (?,?,?,?,?,?,?,?)");
+        $st->execute([$tableId, null, $numero, null, $total, $payModeDb, $statutDb, $_SESSION['user_id']]);
         $orderId = $db->lastInsertId();
         foreach ($cartItems as $it) {
-            $pid = intval($it['id'] ?? 0);
+            $pid = intval($it['id'] ?? 0); 
             $qty = intval($it['qty'] ?? 1);
             $prix = floatval($it['prix'] ?? 0);
             $db->prepare("INSERT INTO detail_commande (commande_id,produit_id,prix,qte,remise,sous_total) VALUES (?,?,?,?,?,?)")

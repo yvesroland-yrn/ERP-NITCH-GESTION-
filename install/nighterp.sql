@@ -147,7 +147,6 @@ CREATE TABLE IF NOT EXISTS commandes (
     client_id       INT DEFAULT NULL,
     numero          VARCHAR(60) DEFAULT NULL,
     promotion_id    INT DEFAULT NULL,
-    sous_total      DECIMAL(15,2) DEFAULT 0.00,
     total           DECIMAL(15,2) DEFAULT 0.00,
     mode_paiement   VARCHAR(50) DEFAULT 'Espèces',
     statut          VARCHAR(50) DEFAULT 'En attente',
